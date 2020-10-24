@@ -4,6 +4,9 @@
 \usetheme{Madrid}
 \usecolortheme{default}
 
+\usepackage{graphicx}
+\graphicspath{ {./} }
+
 %Information to be included in the title page:
 \title{Many-wise Independent Hash Functions}
 \author{Peleg Kazaz}
@@ -65,9 +68,9 @@ These are nice properties. Can we achieve them using smaller function families?
 \frametitle{k-wise independent}
 
 \begin{block}{Definition (k-wise Independence)}
-Let $\mathcal{H} = \{h_1,...,h_t\}$ be a family of functions such that $h_i:\mathcal{D}\rightarrow \mathcal{R}$. $\mathcal{H}$ is called \alert{k-universal} if $\forall_{x_1, ..., x_k \in \mathcal{D}} \, \forall_{y_1, ..., y_k \in \mathcal{R}}$ we have the following guarantee. \\
+Let $\mathcal{H} = \{h_1,...,h_t\}$ be a family of functions such that $h_i:\mathcal{D}\rightarrow \mathcal{R}$. $\mathcal{H}$ is called \alert{k-wise independent hash functions family} if $\forall_{x_1, ..., x_k \in \mathcal{D}} \, \forall_{y_1, ..., y_k \in \mathcal{R}}$ we have the following guarantee. \\
 \begin{center}
-$\Pr\limits_{h \leftarrow \mathcal{H}}[\forall_i  h_i(x_i) = y_i] = \frac{1}{|\mathcal{R}|^k}$
+$\Pr\limits_{h \leftarrow \mathcal{H}}[\forall_i  h(x_i) = y_i] = \frac{1}{|\mathcal{R}|^k}$
 \end{center}
 \end{block}
 
@@ -78,7 +81,7 @@ Pay attention that the $k+1$'th element may be determined uniquely.
 \begin{frame}{k-wise $\rightarrow$ k-1-wise}
 \begin{itemize}
  \item<1-> Let us consider $k-1$ different elements $x_1,...,x_{k-1}\in\mathcal{D}, y_1,...,y_{k-1}\in\mathcal{R}$ and choose some $x_k \in \mathcal{D}$.
- \item<2-> $\Pr\limits_{\pi \leftarrow \Pi}[\forall_{i \in [k-1]}  h_i(x_i) = y_i] = \sum\limits_{y_k \in \mathcal{R}} \Pr\limits_{\pi \leftarrow \Pi}[\forall_{i \in [k]}  h_i(x_i) = y_i] = \sum\limits_{y_k \in \mathcal{R}} \frac{1}{|\mathcal{R}|^k} = \frac{|\mathcal{R}|}{|\mathcal{R}|^k} = \frac{1}{|\mathcal{R}|^{k-1}}$.   
+ \item<2-> $\Pr\limits_{h \leftarrow \mathcal{H}}[\forall_{i \in [k-1]}  h(x_i) = y_i] = \sum\limits_{y_k \in \mathcal{R}} \Pr\limits_{h \leftarrow \mathcal{H}}[\forall_{i \in [k]}  h(x_i) = y_i] = \sum\limits_{y_k \in \mathcal{R}} \frac{1}{|\mathcal{R}|^k} = \frac{|\mathcal{R}|}{|\mathcal{R}|^k} = \frac{1}{|\mathcal{R}|^{k-1}}$.   
  \item<3-> By induction, the same holds for any $i \leq k$. 
  \item<4-> Using this result, we can prove the independence between the inputs.
  \item<5-> To sum up - the definition is equivalent for requesting the first $k$ samples of $h$ to be uniformly distributed and independent.
@@ -93,8 +96,27 @@ Pay attention that the $k+1$'th element may be determined uniquely.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Independent Hash Function}
+\begin{frame}{Universal Hash Function}
+\begin{block}{Definition (Universal Family)}
+Let $\mathcal{H} = \{h_1,...,h_t\}$ be a family of functions such that $h_i:\mathcal{D}\rightarrow \mathcal{R}$. $\mathcal{H}$ is called \alert{universal} if $\forall_{x_1, x_2 \in \mathcal{D}}$ we have the following guarantee. \\
+\begin{center}
+$\Pr\limits_{h \leftarrow \mathcal{H}}[h(x_1) = h(x_2)] \leq \frac{1}{|\mathcal{R}|}$
+\end{center}
+\end{block}
+\end{frame}
+
+\begin{frame}{Universal vs 2-wise}
+
+\begin{itemize}
+    \item 2-wise Independence implies universality \\
+    $\Pr[h(x_1) = h(x_2)] = \sum\limits_{y \in \mathcal{R}} \Pr[h(x_1)=h(x_2)=y] = \sum\limits_{y \in \mathcal{R}} \frac{1}{|\mathcal{R}|^2} = \frac{1}{|\mathcal{R}|}$
+    \item When $|\mathcal{D}| < |\mathcal{R}|$, we can craft a specific function $h^*$ which is one-to-one, and get $\mathcal{H} = \{h^*\}$ which is universal (and not 2-wise). 
+\end{itemize}
     
+\end{frame}
+
+\begin{frame}{Universal vs 2-wise}
+        \includegraphics[scale=0.44]{resized.png}
 \end{frame}
 
 \section{Non-adaptive PRF to Adaptive PRF}
