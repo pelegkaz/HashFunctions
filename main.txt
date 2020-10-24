@@ -1,0 +1,76 @@
+\documentclass{beamer}
+
+\usepackage[utf8]{inputenc}
+\usetheme{Madrid}
+\usecolortheme{beaver}
+
+%Information to be included in the title page:
+\title{Many-wise Independent Hash Functions}
+\author{Peleg Kazaz}
+\institute{Tel Aviv University}
+\date{27.10.2020}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\section{Hash Functions}
+\begin{frame}
+
+\frametitle{General Definitions}
+Now we define boring things.
+\end{frame}
+
+\begin{frame}
+\frametitle{Background for Hash Functions}
+
+In general, "hash function" is a specific determenistic function ($\{0,1\}^* \rightarrow \{0,1\}^n$) like md5, sha-1 which is used for cryptographic algorithms. These functions have many computation properties that are used in these cases. For example:
+
+\begin{itemize}
+ \item<1-> First Pre-image (finding $m$ given $h(m)$)
+ \item<2-> Second Pre-image (finding $m_2$ given $m_1$ where $h(m_1) = h(m_2)$)
+ \item<3-> Collision (finding $m_1, m_2$ where $h(m_1) = h(m_2)$)
+\end{itemize}
+\pause \pause \pause
+These properties based only on computation restrictions and therefore this definition for hash functions will not be discussed in this lecture. \\
+Also there is the definition for one-way function in the computational complexity sense (where given $f(x)$ finding $x$ is .
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Random Function}
+
+Let us consider the functions $\mathbb{D} \rightarrow \mathbb{R}$ where $\mathbb{D}$ is the domain and $\mathbb{R}$ is the range. \\
+Denote $\Pi$ all of the possible functions. $\Pi = \{\pi_1, \pi_2, ... , \pi_t\} \\
+
+\begin{itemize}
+ \item<1-> $|\Pi| = 2^{m2^n}$
+ \item<2-> Second Pre-image (finding $m_2$ given $m_1$ where $h(m_1) = h(m_2)$)
+ \item<3-> Collision (finding $m_1, m_2$ where $h(m_1) = h(m_2)$)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Hash Functions}
+
+\begin{block}{Definition (k-wise Independence)}
+Let $\mathcal{H} = \{h_1,...,h_t\}$ be a family of functions such that $h_i:\mathcal{D}\rightarrow \mathcal{R}$. $\mathcal{H}$ is called \alert{k-universal} if $\forall_{x_1, ..., x_k \in \mathcal{D}} \, \forall_{y_1, ..., y_k \in \mathcal{R}}$ we have the following guarantee. \\
+\begin{center}
+$\Pr_{h \leftarrow \mathcal{H}}[\forall_i  h_i(x_i) = y_i] = \frac{1}{|\mathcal{R}|^k}$
+\end{center}
+\end{block}
+
+\end{frame}
+
+\section{Non-adaptive PRF to Adaptive PRF}
+
+\end{document}
