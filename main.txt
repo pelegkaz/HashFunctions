@@ -32,6 +32,8 @@
 Now we define boring things.
 \end{frame}
 
+\subsection{Background}
+
 \begin{frame}
 \frametitle{Background for Hash Functions}
 
@@ -64,8 +66,9 @@ These are nice properties. Can we achieve them using smaller function families?
 
 \end{frame}
 
+\subsection{k-wise Independent}
 \begin{frame}
-\frametitle{k-wise independent}
+\frametitle{k-wise Independent}
 
 \begin{block}{Definition (k-wise Independence)}
 Let $\mathcal{H} = \{h_1,...,h_t\}$ be a family of functions such that $h_i:\mathcal{D}\rightarrow \mathcal{R}$. $\mathcal{H}$ is called \alert{k-wise independent hash functions family} if $\forall_{x_1, ..., x_k \in \mathcal{D}} \, \forall_{y_1, ..., y_k \in \mathcal{R}}$ we have the following guarantee. \\
@@ -95,7 +98,7 @@ Pay attention that the $k+1$'th element may be determined uniquely.
  \item<3-> This family is k-wise independent since the first $k$ samples of a polynomial are independent and uniformly distributed. 
 \end{itemize}
 \end{frame}
-
+\subsection{Universal Hash Function Family}
 \begin{frame}{Universal Hash Function}
 \begin{block}{Definition (Universal Family)}
 Let $\mathcal{H} = \{h_1,...,h_t\}$ be a family of functions such that $h_i:\mathcal{D}\rightarrow \mathcal{R}$. $\mathcal{H}$ is called \alert{universal} if $\forall_{x_1, x_2 \in \mathcal{D}}$ we have the following guarantee. \\
@@ -105,6 +108,7 @@ $\Pr\limits_{h \leftarrow \mathcal{H}}[h(x_1) = h(x_2)] \leq \frac{1}{|\mathcal{
 \end{block}
 \end{frame}
 
+\subsection{Universal vs 2-wise}
 \begin{frame}{Universal vs 2-wise}
 
 \begin{itemize}
@@ -120,5 +124,98 @@ $\Pr\limits_{h \leftarrow \mathcal{H}}[h(x_1) = h(x_2)] \leq \frac{1}{|\mathcal{
 \end{frame}
 
 \section{Non-adaptive PRF to Adaptive PRF}
+
+\subsection{Definitions}
+\begin{frame}{Ensemble of Function Families}
+    \begin{itemize}
+        \item Ensemble is a series of function families. $\mathcal{F} = \{\mathcal{F}_n \subset \mathcal{D}_n \rightarrow \mathcal{R}_n\}_n$ 
+    \end{itemize}
+\begin{block}{Definition (Efficient Ensemble)}
+    A function ensemble $\mathcal{F} = \{\mathcal{F}_n\}$ is \alert{efficient}, if the following holds:
+    \begin{itemize}
+        \item Samplable in polynomial-time: there exists a PPT that given $1^n$, outputs a uniform element in $\mathcal{F}_n$
+        \item Efficient: For every $n$, there exists a polynomial-time algorithm that given $x \in \{0,1\}^n$ and $f \in \mathcal{F}_n$, outputs $f(x)$
+    \end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Pseudorandom Function}
+
+\begin{block}{Definition (Pseudorandom Function)}
+An efficient ensemble $\mathcal{F} = \{\mathcal{F}_n:\{0,1\}^n \rightarrow \{0,1\}^{\ell(n)}\}_n$ is a \alert{$(T(n), \epsilon(n))$-adaptive PRF}, if for every oracle-aided algorithm (distinguisher) $D$ of running time $T(n)$ and large enough $n$, it holds that
+\begin{center}
+    $|\Pr\limits_{f\leftarrow\mathcal{F}_n}[D^f(1^n)=1] - \Pr\limits_{\pi\leftarrow\Pi_n}[D^\pi(1^n)=1]| \leq \epsilon(n)$
+\end{center}
+
+If we limit D above to be non-adaptive (i.e, has to write all his oracle calls beforehand), then $\mathcal{F}$ is called \alert{$(T(n), \epsilon(n))$-non-adaptive PRF}.
+\end{block}
+
+We say that $\mathcal{F}$ is $t$-PRF if it is $(t, \frac{1}{t})$-PRF. \\
+Adaptive PRF is a stronger notion than non-adaptive (every adaptive PRF is also non-adaptive). 
+\end{frame}
+
+\subsection{High Level Description}
+\begin{frame}{The Construction Idea}
+The idea is extremely simple - Composition of a non-adaptive PRF and pairwise-independent hash function gives an adaptive PRF.
+\begin{block}{Theorem}
+Let $\mathcal{F}$ be a $\left(p(n)T(n)\right)$-non-adaptive PRF, where $p \in poly$ is function of the evaluating time of $\mathcal{F}$, and let $\mathcal{H}$ be an efficient pairwise-independent hash function family mapping strings of length $n$ to $\{0,1\}^{log(T(n))}$. Then $\mathcal{F}\circ\mathcal{H}$ is a $\left( \sqrt[3]{T(n)}/2\right)$-adaptive PRF.
+\end{block}
+\begin{center}
+\includegraphics[scale=0.35]{PRF.JPG}    
+\end{center}
+\end{frame}
+
+\begin{frame}{The Proof Idea}
+We are going to prove this theorem in two steps. 
+\begin{itemize}
+    \item \alert{$\mathcal{F} \circ \mathcal{H}$ is indistinguishable from $\Pi \circ \mathcal{H}$.} Falsely assuming an adaptive distinguisher $D$ exists, we construct a non-adaptive distinguisher $\hat{D}$ ($\mathcal{F}$ from $\Pi$).
+    \item \alert{$\Pi \circ \mathcal{H}$ is indistinguishable from $\Pi$.} In order to distinguish, D must find a collision in $h$ (otherwise its samples are purely random). 
+\end{itemize}
+Combining the above yields that \alert{$\mathcal{F} \circ \mathcal{H}$ is indistinguishable from $\Pi$.}
+\begin{center}
+\includegraphics[scale=0.35]{PRF.JPG}    
+\end{center}
+\end{frame}
+\subsection{Detailed Proof}
+\begin{frame}{Detailed Construction}
+\begin{itemize}
+    \item We are given a $\left(p(n)T(n)\right)$-non-adaptive PRF ensemble $\mathcal{F}$, where $p \in poly$ is the evaluating time of $\mathcal{F}$ and $T$ is polynomial-time computable integer function.
+    \item Assume $T(n)$ is a power of two, and denote $t(n) = log(T(n))$.
+    \item For every $\ell \in poly$, it is known that there is pairwise-independent hash functions family mapping strings of length n to strings of length $\ell(n)$.
+    \item Denote $\hat{\mathcal{H}}$ an efficient pairwise-independent function family ensemble mapping strings of length n to string  of length $t(n)$.
+    \item We build a length-preserving ensemble $\mathcal{H}$ using zero-padded $\hat{\mathcal{H}}$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{$\mathcal{F}\circ\mathcal{H} \sim \Pi \circ \mathcal{H}$}
+    
+    \begin{block}{Lemma}
+        For every adaptive distinguisher $D$ of running time $T$ of $\mathcal{F}\circ\mathcal{H} \sim \Pi \circ \mathcal{H}$, there exists a non-adaptive distinguisher $\hat{D}$ of running time $p(n)T(n)$ with
+        {\footnotesize \begin{center}
+            $|\Pr\limits_{g\leftarrow\mathcal{F}_n}[\hat{D}^g(1^n)=1] - \Pr\limits_{g\leftarrow\Pi_n}[\hat{D}^g(1^n)=1]| = $ \\ 
+            $ |\Pr\limits_{g\leftarrow\mathcal{F}_n\circ\mathcal{H}_n}[D^g(1^n)=1] - \Pr\limits_{g\leftarrow\Pi_n\circ\mathcal{H}_n}[D^g(1^n)=1]|$
+        \end{center}}
+        where $\Pi_n$ is the set of all functions from $\{0,1\}^n$ to $\{0,1\}^{\ell(n)}$
+    \end{block}
+    
+\end{frame}
+
+\begin{frame}{$\mathcal{F}\circ\mathcal{H} \sim \Pi \circ \mathcal{H}$ - Proof}
+
+\begin{block}{The Algorithm - $\hat{D}^\phi(1^n)$}
+\textbf{Input:} $1^n$ \\
+\textbf{Oracle:} $\phi:\{0,1\}^n\rightarrow\{0,1\}^{\ell(n)}$ \\
+\textbf{The Algorithm:}
+\begin{itemize}
+    \item Compute $\phi(x)$ for every $x \in \{0,1\}^{t(n)}$
+    \item Choose uniformly $h \leftarrow \mathcal{H}$
+    \item Define $g = \phi \circ h$
+    \item Emulate $D^g(1^n)$: answer the queries using the information from obtained in Step 1.
+\end{itemize}
+\end{block}
+D makes $T(n)$ \alert{non-adaptive} queries and running at $T(n)p(n)$. \\
+\end{frame}
+
+
 
 \end{document}
