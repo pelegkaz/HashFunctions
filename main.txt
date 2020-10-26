@@ -168,10 +168,10 @@ Let $\mathcal{F}$ be a $\left(p(n)T(n)\right)$-non-adaptive PRF, where $p \in po
 \begin{frame}{The Proof Idea}
 We are going to prove this theorem in two steps. 
 \begin{itemize}
-    \item \alert{$\mathcal{F} \circ \mathcal{H}$ is indistinguishable from $\Pi \circ \mathcal{H}$.} Falsely assuming an adaptive distinguisher $D$ exists, we construct a non-adaptive distinguisher $\hat{D}$ ($\mathcal{F}$ from $\Pi$).
-    \item \alert{$\Pi \circ \mathcal{H}$ is indistinguishable from $\Pi$.} In order to distinguish, D must find a collision in $h$ (otherwise its samples are purely random). 
+    \item \alert{$\mathcal{F}\circ\mathcal{H}$ is indistinguishable from $\hat{\Pi}\circ\mathcal{H}$.} Falsely assuming an adaptive distinguisher $D$ exists, we construct a non-adaptive distinguisher $\hat{D}$ ($\mathcal{F}$ from $\Pi$).
+    \item \alert{$\hat{\Pi}\circ\mathcal{H}$ is indistinguishable from $\Pi$.} In order to distinguish, D must find a collision in $h$ (otherwise its samples are purely random). 
 \end{itemize}
-Combining the above yields that \alert{$\mathcal{F} \circ \mathcal{H}$ is indistinguishable from $\Pi$.}
+Combining the above yields that \alert{$\mathcal{F}\circ\mathcal{H}$ is indistinguishable from $\Pi$.}
 \begin{center}
 \includegraphics[scale=0.35]{PRF.JPG}    
 \end{center}
@@ -187,10 +187,10 @@ Combining the above yields that \alert{$\mathcal{F} \circ \mathcal{H}$ is indist
 \end{itemize}
 \end{frame}
 
-\begin{frame}{$\mathcal{F}\circ\mathcal{H} \sim \Pi \circ \mathcal{H}$}
+\begin{frame}{$\mathcal{F}\circ\mathcal{H} \sim \hat{\Pi}\circ\mathcal{H}$}
     
     \begin{block}{Lemma}
-        For every adaptive distinguisher $D$ of running time $T$ of $\mathcal{F}\circ\mathcal{H} \sim \Pi \circ \mathcal{H}$, there exists a non-adaptive distinguisher $\hat{D}$ of running time $p(n)T(n)$ with
+        For every adaptive distinguisher $D$ of running time $T$ of $\mathcal{F}\circ\mathcal{H} \sim \hat{\Pi}\circ\mathcal{H}$, there exists a non-adaptive distinguisher $\hat{D}$ of running time $p(n)T(n)$ with
         {\footnotesize \begin{center}
             $|\Pr\limits_{g\leftarrow\mathcal{F}_n}[\hat{D}^g(1^n)=1] - \Pr\limits_{g\leftarrow\Pi_n}[\hat{D}^g(1^n)=1]| = $ \\ 
             $ |\Pr\limits_{g\leftarrow\mathcal{F}_n\circ\mathcal{H}_n}[D^g(1^n)=1] - \Pr\limits_{g\leftarrow\Pi_n\circ\mathcal{H}_n}[D^g(1^n)=1]|$
@@ -200,7 +200,7 @@ Combining the above yields that \alert{$\mathcal{F} \circ \mathcal{H}$ is indist
     
 \end{frame}
 
-\begin{frame}{$\mathcal{F}\circ\mathcal{H} \sim \Pi \circ \mathcal{H}$ - Proof}
+\begin{frame}{$\mathcal{F}\circ\mathcal{H} \sim \hat{\Pi}\circ\mathcal{H}$ - Proof}
 
 \begin{block}{The Algorithm - $\hat{D}^\phi(1^n)$}
 \textbf{Input:} $1^n$ \\
@@ -209,7 +209,7 @@ Combining the above yields that \alert{$\mathcal{F} \circ \mathcal{H}$ is indist
 \begin{itemize}
     \item Compute $\phi(x)$ for every $x \in \{0,1\}^{t(n)}$
     \item Choose uniformly $h \leftarrow \mathcal{H}$
-    \item Define $g = \phi \circ h$
+    \item Define $g = \phi\circh$
     \item Emulate $D^g(1^n)$: answer the queries using the information from obtained in Step 1.
 \end{itemize}
 \end{block}
