@@ -26,18 +26,13 @@
 }
 
 \section{Hash Functions}
-\begin{frame}
-
-\frametitle{General Definitions}
-Now we define boring things.
-\end{frame}
 
 \subsection{Background}
 
 \begin{frame}
 \frametitle{Background for Hash Functions}
 
-In general, "hash function" is a specific determenistic function ($\{0,1\}^* \rightarrow \{0,1\}^n$) like md5, sha-1 which is used for cryptographic algorithms. These functions have many computation properties that are used in these cases. For example:
+In practice, "hash function" is a specific determenistic function ($\{0,1\}^* \rightarrow \{0,1\}^n$) like md5, sha-1. Common hard properties:
 
 \begin{itemize}
  \item<1-> First Pre-image (finding $m$ given $h(m)$)
@@ -45,8 +40,7 @@ In general, "hash function" is a specific determenistic function ($\{0,1\}^* \ri
  \item<3-> Collision (finding $m_1, m_2$ where $h(m_1) = h(m_2)$)
 \end{itemize}
 \pause \pause \pause
-These properties based only on computation restrictions and therefore this definition for hash functions will not be discussed in this lecture. \\
-Also there is the definition for one-way function in the computational complexity sense (where given $f(x)$ finding $x$ is .
+We will discuss a \alert{completely different definition.}
 
 \end{frame}
 
@@ -66,14 +60,14 @@ These are nice properties. Can we achieve them using smaller function families?
 
 \end{frame}
 
-\subsection{k-wise Independent}
+\subsection{k-wise Independent Function Family}
 \begin{frame}
-\frametitle{k-wise Independent}
+\frametitle{k-wise Independent Function Family}
 
 \begin{block}{Definition (k-wise Independence)}
 Let $\mathcal{H} = \{h_1,...,h_t\}$ be a family of functions such that $h_i:\mathcal{D}\rightarrow \mathcal{R}$. $\mathcal{H}$ is called \alert{k-wise independent hash functions family} if $\forall_{x_1, ..., x_k \in \mathcal{D}} \, \forall_{y_1, ..., y_k \in \mathcal{R}}$ we have the following guarantee. \\
 \begin{center}
-$\Pr\limits_{h \leftarrow \mathcal{H}}[\forall_i  h(x_i) = y_i] = \frac{1}{|\mathcal{R}|^k}$
+$\Pr\limits_{h \leftarrow \mathcal{H}}[\forall_{i \in [k]}  h(x_i) = y_i] = \frac{1}{|\mathcal{R}|^k}$
 \end{center}
 \end{block}
 
@@ -90,7 +84,7 @@ Pay attention that the $k+1$'th element may be determined uniquely.
  \item<5-> To sum up - the definition is equivalent for requesting the first $k$ samples of $h$ to be uniformly distributed and independent.
 \end{itemize}
 \end{frame}
-
+\subsection{Example Construction}
 \begin{frame}{Example Construction}
 \begin{itemize}
  \item<1-> Let $\mathcal{D} = \mathcal{R} = \mathbb{F}$, where $\mathbb{F}$ is a field.
@@ -98,8 +92,8 @@ Pay attention that the $k+1$'th element may be determined uniquely.
  \item<3-> This family is k-wise independent since the first $k$ samples of a polynomial are independent and uniformly distributed. 
 \end{itemize}
 \end{frame}
-\subsection{Universal Hash Function Family}
-\begin{frame}{Universal Hash Function}
+\subsection{Universal Function Family}
+\begin{frame}{Universal Function Family}
 \begin{block}{Definition (Universal Family)}
 Let $\mathcal{H} = \{h_1,...,h_t\}$ be a family of functions such that $h_i:\mathcal{D}\rightarrow \mathcal{R}$. $\mathcal{H}$ is called \alert{universal} if $\forall_{x_1, x_2 \in \mathcal{D}}$ we have the following guarantee. \\
 \begin{center}
@@ -168,7 +162,7 @@ Let $\mathcal{F}$ be a $\left(p(n)T(n)\right)$-non-adaptive PRF, where $p \in po
 \begin{frame}{The Proof Idea}
 We are going to prove this theorem in two steps. 
 \begin{itemize}
-    \item \alert{$\mathcal{F}\circ\mathcal{H}$ is indistinguishable from $\Pi\circ\mathcal{H}$.} Falsely assuming an adaptive distinguisher $D$ exists, we construct a non-adaptive distinguisher $\hat{D}$ ($\mathcal{F}$ from $\Pi$).
+    \item \alert{$\mathcal{F}\circ\mathcal{H}$ is indistinguishable from $\Pi\circ\mathcal{H}$.} Falsely assuming an adaptive distinguisher $D$ exists, we construct a non-adaptive distinguisher $\hat{D}$ ($\mathcal{F}$ from $\Pi$). 
     \item \alert{$\Pi\circ\mathcal{H}$ is indistinguishable from $\Pi$.} In order to distinguish, D must find a collision in $h$ (otherwise its samples are purely random). 
 \end{itemize}
 Combining the above yields that \alert{$\mathcal{F}\circ\mathcal{H}$ is indistinguishable from $\Pi$.}
@@ -189,7 +183,7 @@ Combining the above yields that \alert{$\mathcal{F}\circ\mathcal{H}$ is indistin
 
 \begin{frame}{$\mathcal{F}\circ\mathcal{H} \sim \Pi\circ\mathcal{H}$}
     
-    \begin{block}{Lemma}
+    \begin{block}{Lemma - $\mathcal{F}\circ\mathcal{H} \sim \Pi\circ\mathcal{H}$}
         For every adaptive distinguisher $D$ of running time $T$ of $\mathcal{F}\circ\mathcal{H} \sim \Pi\circ\mathcal{H}$, there exists a non-adaptive distinguisher $\hat{D}$ of running time $p(n)T(n)$ with
         {\footnotesize \begin{center}
             $|\Pr\limits_{g\leftarrow\mathcal{F}_n}[\hat{D}^g(1^n)=1] - \Pr\limits_{g\leftarrow\Pi_n}[\hat{D}^g(1^n)=1]| = $ \\ 
@@ -217,6 +211,51 @@ D makes $T(n)$ \alert{non-adaptive} queries and running at $T(n)p(n)$.
 
 \end{frame}
 
+\begin{frame}{$\Pi\circ\mathcal{H} \sim \Pi$}
+    \begin{block}{Lemma - $\Pi\circ\mathcal{H} \sim \Pi$}
+        Let $\mathcal{H}$ be a pairwise-independent function family mapping strings of length $n$ to $\{0,1\}^{t(n)}$. Let D be an s-query oracle-aided algorithm then
+        \begin{center}
+            $ |\Pr\limits_{g\leftarrow\Pi_n\circ\mathcal{H}_n}[D^g(1^n)=1] - \Pr\limits_{\pi\leftarrow\Pi_n}[D^\pi(1^n)=1]| \leq \frac{s^2}{T}
+            $
+        \end{center}
+    \end{block}
+    The point in this proof is that the only way to distinguish is to find a collision which is rare.
+\end{frame}
 
+\begin{frame}{$\Pi\circ\mathcal{H} \sim \Pi$ - Proof}
+\begin{proof}
+    Assume $D$ is deterministic and makes $s$ queries. 
+    \begin{block}{Algorithm}
+    \begin{itemize}
+        \item Emulate $D$, answer $q_i$ with $a_i \leftarrow \{0,1\}^{t(n)}$.
+        \item Choose $h \leftarrow \mathcal{H}$
+        \item Emulate $D$ again: \\
+        \tab if $\exists_{j<i} h(q_i) = h(q_j)$ - answer $a_j$ \\
+        \tab else - answer $a_i$
+    \end{itemize}
+    \end{block}
+        These are emulation of $\Pi$ and $\mathcal{H} \circ \Pi$. Act the same \alert{until the first collision}. \\
+    $\Pr[\bar{A} \neq \bar{A}'] \leq \Pr[Coll] \leq \frac{s^2}{T}$
+    \end{proof}
+\end{frame}
+
+\begin{frame}{Putting It Together}
+\begin{proof}
+Using triangle inequality, and our two lemmas:
+$ |\Pr\limits_{g\leftarrow\mathcal{F}_n\circ\mathcal{H}_n}[D^g(1^n)=1] - \Pr\limits_{g\leftarrow\Pi_n}[D^g(1^n)=1]| \leq $ \\
+$|\Pr\limits_{g\leftarrow\mathcal{F}_n\circ\mathcal{H}_n}[D^g(1^n)=1] - \Pr\limits_{g\leftarrow\Pi_n\circ\mathcal{H}_n}[D^g(1^n)=1]| + $ \\
+$|\Pr\limits_{g\leftarrow\Pi_n\circ\mathcal{H}_n}[D^g(1^n)=1] - \Pr\limits_{\pi\leftarrow\Pi_n}[D^\pi(1^n)=1]| $ \\
+$\leq \epsilon(n) + \frac{s^2}{T}$ \\
+Choosing $s(n) = \sqrt[3]{T(n)}/2$, $\epsilon(n) = \frac{1}{p(n)T(n)}$, yields that $\mathcal{F}\circ\mathcal{H}$ is $(s, \frac{1}{s})$-PRF.
+\end{proof}
+
+\end{frame}
+
+\section{Summary}
+\begin{frame}{Summary} 
+\begin{center}
+    Questions?    
+\end{center}
+\end{frame}
 
 \end{document}
